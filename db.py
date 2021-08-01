@@ -8,12 +8,14 @@ batters_daily_table= """ CREATE TABLE IF NOT EXISTS batters_daily (
                                      iddate text PRIMARY KEY,
                                      id text NOT NULL,
                                      date text NOT NULL,
-                                     zscore real NOT NULL
+                                     zscore real NOT NULL,
                                      FOREIGN KEY (id) REFERENCES player_names(id)); """
 
 player_names_table= """CREATE TABLE IF NOT EXISTS player_names (
                                     id text PRIMARY KEY,
                                     name text NOT NULL);"""
+
+player_index="CREATE INDEX stat_date ON batters_daily(date)"
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
