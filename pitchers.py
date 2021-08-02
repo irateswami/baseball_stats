@@ -23,14 +23,46 @@ class Pitcher:
         return self.name + " | " + self.id+ " | " +self.wins+ " | " +self.sv+ " | " +self.k+ " | " +self.era+ " | " +self.whip
 
 def parse_pitchers(filename):
-    with open(filename, 'r') as file:
+    with open(filename, 'r', encoding='utf-8-sig') as file:
         reader = csv.DictReader(file)
-
-        total_wins= 0
-        total_sv = 0
-        total_k = 0
-        total_era = 0
-        total_whip = 0
+        total_wins = []
+        total_sv = []
+        total_k = []
+        total_era = []
+        total_whip = []
+        pitchers = []
 
         for row in reader:
-            print(row[SB])
+            new_batter = Batter(row[NAME], row[PLAYERID], 
+                int(row[WINS]), 
+                int(row[SV]), 
+                int(row[K]), 
+                int(row[ERA]), 
+                float(row[WHIP]))
+            total_wins.append(int(row[WINS]))
+            total_sv.append(int(row[SV]))
+            total_k.append(int(row[K]))
+            total_era.append(int(row[ERA]))
+            total_whip.append(float(row[WHIP]))
+            batters.append(new_batter)
+
+        mean_wins = statistics.mean(total_wins)
+        mean_sv = statistics.mean(total_sv)
+        mean_k = statistics.mean(total_k)
+        mean_era = statistics.mean(total_era)
+        mean_whip = statistics.mean(total_whip)
+
+        pstdev_wins = statistics.pstdev(total_wins)
+        pstdev_sv = statistics.pstdev(total_sv)
+        pstdev_k = statistics.pstdev(total_k)
+        pstdev_era = statistics.pstdev(total_era)
+        pstdev_whip = statistics.pstdev(total_whip)
+
+        for batter in batters:
+            batter.zscore += (batter.wins - mean_wins)/pstdev_wins
+            batter.zscore += (batter.sv - mean_sv)/pstdev_sv
+            batter.zscore += (batter.k - mean_k)/pstdev_k
+            batter.zscore += (batter.era - mean_era)/pstdev_era
+            batter.zscore += (batter.whip - mean_whip)/pstdev_whip
+        
+        return batters
